@@ -21,26 +21,27 @@ If you find the work useful, please cite the following paper:
 </center>
 
 We reconsider the document retrieval process as a data transmission problem from
-a query to a document, where the index for the document forms a "information
-bottleneck." Previous works including DSI [1] and NCI [2] for generative
-document retrieval (GDR) proposed to index every document with a unique number
-string, such as "1-29-3-6". The indexing was produced through a hierarchical
-k-means clustering of document embeddings. However, this optimality of k-means
+a query to a document, where the document's index forms an "information
+bottleneck." Previous works, including DSI [1] and NCI [2] for generative
+document retrieval (GDR), proposed indexing each document with a unique number
+string, such as "1-29-3-6." This indexing was produced through hierarchical
+k-means clustering of document embeddings. However, the optimality of k-means
 clustering was not theoretically explored.
 
-In this work, we formulate this indexing problem by using the *information
-bottleneck theory* of Tishby et al. [3], and showed that the indexing must be
-produced by considering queries distributions, in addition to document
-distributions, to realize information-theoretical optimality. We propose a new
-indexing method called the *bottleneck-minimal indexing* (BMI), which is a
-simple adaptation of the original indexing method in DSI & NCI: to apply the
-hierarchical k-means algorithm to the query embeddings, rather than the document
-embeddings. This simple change leads to a significant improvement in the
-retrieval performance on NQ320K and Marco datasets, especially for smaller
-models, as shown in the following Table.
+In this work, we formulate this indexing problem using the information
+bottleneck theory of Tishby et al. [3] and show that indexing must consider
+query distributions in addition to document distributions to achieve
+information-theoretical optimality. We propose a new indexing method called
+bottleneck-minimal indexing (BMI), which is a simple adaptation of the original
+indexing method in DSI and NCI. Instead of applying the hierarchical k-means
+algorithm to the document embeddings, we apply it to the query embeddings. This
+simple change leads to a significant improvement in retrieval performance on the
+NQ320K and Marco datasets, especially for smaller models, as shown in the
+following table.
+
+
 
 ![Retrieval performance](./img/table2.png)
-
 
 References:
 - Tay, Y., Tran, V., Dehghani, M., Ni, J., Bahri, D., Mehta, H., ... & Metzler, D. (2022). Transformer memory as a differentiable search index. Advances in Neural Information Processing Systems, 35, 21831-21843.
