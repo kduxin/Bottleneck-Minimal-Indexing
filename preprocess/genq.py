@@ -16,7 +16,6 @@ def main(args):
         args.docs_path,
         sep="\t",
         usecols=["docid", "doc"],
-        dtype={"docid": int},
         index_col="docid",
     )["doc"]
     docid2doc = dict(docs)
@@ -52,7 +51,6 @@ def main(args):
         args.docs_path,
         sep="\t",
         usecols=["docid", "doc"],
-        dtype={"docid": int},
         index_col="docid",
     )["doc"]
     docid2doc = dict(docs)

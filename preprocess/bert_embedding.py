@@ -7,7 +7,7 @@ import pandas as pd
 import numpy as np
 import torch
 import transformers
-from NCI.types import IndexedEmbeddings
+from BMI.io import IndexedEmbeddings
 
 torch.backends.cuda.matmul.allow_tf32 = True
 
@@ -19,7 +19,7 @@ def main(args):
         args.docs_path,
         sep="\t",
         usecols=["docid", args.text_col],
-        dtype={"docid": int, args.text_col: str},
+        dtype={args.text_col: str},
     )
 
     device_que = multiprocessing.Queue()
