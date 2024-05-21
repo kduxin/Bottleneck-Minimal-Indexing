@@ -1,12 +1,12 @@
 from __future__ import annotations
-from typing import Tuple, List, Mapping
+from typing import Tuple, List, Mapping, Set, Hashable
 from dataclasses import dataclass, field
 from collections import defaultdict
 import tqdm
+import h5py
 import numpy as np
 import pandas as pd
 from numpy import ndarray
-import h5py
 
 from .index import Index
 
@@ -26,7 +26,7 @@ class IndexedEmbeddings:
         with open(path, "rt") as f:
             for line in tqdm.tqdm(f):
                 idx, embstr = line.strip().split("\t")
-                ids.append(int(idx))
+                ids.append(idx)
                 emb = np.fromstring(embstr, sep="|")
                 embs.append(emb)
 
@@ -44,6 +44,8 @@ class IndexedEmbeddings:
         with h5py.File(path, "r") as f:
             ids = f["ids"][:]
             embs = f["embs"][:]
+        if ids.dtype == 'O':
+            ids = ids.astype('str')
         return cls(ids=ids, embs=embs)
 
     def to_h5(self, path):
@@ -65,10 +67,10 @@ class IndexedEmbeddings:
 
 @dataclass
 class StringIndexing:
-    docid2index: Mapping[int, List[int]]
-    index2docid: Mapping[str, int]
+    docid2index: Mapping[Hashable, List[int]]
+    index2docid: Mapping[str, Hashable]
 
-    def __init__(self, docid2index: Mapping[int, List[int]]):
+    def __init__(self, docid2index: Mapping[Hashable, List[int]]):
         self.docid2index = docid2index
         self.index2docid = {
             intarray_to_string(val): key for key, val in docid2index.items()
@@ -80,8 +82,8 @@ class StringIndexing:
         with open(path, "rt") as f:
             lines = f.readlines()
             for line in lines[1:]:
-                idx, ids = line.strip().split("\t")
-                docid2index[int(idx)] = tuple(map(int, ids.split("-")))
+                docid, ids = line.strip().split("\t")
+                docid2index[docid] = tuple(map(int, ids.split("-")))
         return cls(docid2index)
 
     def to_tsv(self, path):
@@ -93,7 +95,7 @@ class StringIndexing:
     def to_pandas(self):
         return pd.DataFrame(self.docid2index.items(), columns=["docid", "index"])
 
-    def __getitem__(self, docid: int):
+    def __getitem__(self, docid: Hashable):
         return self.docid2index[docid]
 
     def get_docid(self, index: str | Tuple[int] | List[int]):
@@ -117,7 +119,7 @@ def intarray_to_string(index):
 class DocumentRetrievalTrainingFile:
     queries: List[str]
     indexes: List[str]
-    docids: List[int]
+    docids: List[Hashable]
 
     def __post_init__(self):
         assert len(self.queries) == len(self.indexes) == len(self.docids)
@@ -146,7 +148,7 @@ class DocumentRetrievalTrainingFile:
 @dataclass
 class DocumentRetrievalInferenceFile:
     queries: List[str]
-    docids: List[int]
+    docids: List[Hashable]
 
     def __post_init__(self):
         assert len(self.queries) == len(self.docids)
@@ -155,7 +157,7 @@ class DocumentRetrievalInferenceFile:
     def from_tsv(cls, query_docid_path):
         query_docid = pd.read_csv(
             query_docid_path, sep="\t", usecols=["query", "docid"],
-            dtype={"query": str, "docid": int}
+            dtype={"query": str}
         )
         return cls(
             queries=query_docid["query"].tolist(),
@@ -174,9 +176,9 @@ class DocumentRetrievalInferenceFile:
 @dataclass
 class DocidIndexCompatibility:
     indexes: List[str]
-    docids: List[int]
-    index2docids: Mapping[str, Set[int]] = field(init=False)
-    docid2indexes: Mapping[int, Set[str]] = field(init=False)
+    docids: List[Hashable]
+    index2docids: Mapping[str, Set[Hashable]] = field(init=False)
+    docid2indexes: Mapping[Hashable, Set[str]] = field(init=False)
 
     def __post_init__(self):
         assert len(self.indexes) == len(self.docids)
@@ -188,7 +190,7 @@ class DocidIndexCompatibility:
             path,
             sep="\t",
             usecols=["docid", "index"],
-            dtype={"docid": int, "index": str},
+            dtype={"index": str},
         )
         return cls(indexes=df["index"].tolist(), docids=df["docid"].tolist())
 
@@ -196,9 +198,8 @@ class DocidIndexCompatibility:
         df = pd.DataFrame({"docid": self.docids, "index": self.indexes})
         df.to_csv(path, sep="\t", header=None, index=None)
 
-    def is_compatible(self, index: Index, docid: int):
+    def is_compatible(self, index: Index, docid: Hashable):
         assert isinstance(index, Index)
-        assert isinstance(docid, int)
         idstr = index.to_string()
         return docid in self.index2docids[idstr] and idstr in self.docid2indexes[docid]
 

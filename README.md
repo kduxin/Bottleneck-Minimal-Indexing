@@ -79,6 +79,9 @@ into WANDB_API_KEY in the training scripts.
 Run the script in `scripts/NQ320K/infer.sh`. You must specify the path to the
 trained model (**.ckpt) and the data in the script.
 
+### MARCO-Lite
+As for the MARCO-Lite dataset, please use the scripts under `scripts/Marco-Lite`.
+
 ## Acknowledgments
 A large part of the code is based on the implementation of
 [NCI](https://github.com/solidsea98/Neural-Corpus-Indexer-NCI?tab=readme-ov-file).

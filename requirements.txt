@@ -24,3 +24,4 @@ xxhash
 wandb
 sentencepiece
 tensorboardX
+datasets
