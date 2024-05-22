@@ -19,7 +19,9 @@ def main(args):
     with h5py.File(args.embedding_path, "r") as f:
         X = f["embs"][:]
         ids = f["ids"][:]
-    
+
+    embeddings = IndexedEmbeddings.from_h5(args.embedding_path)
+    X, ids = embeddings.embs, embeddings.ids
     print(X.shape)
 
     kmeans = cuml.KMeans(

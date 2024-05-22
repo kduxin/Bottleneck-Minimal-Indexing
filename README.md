@@ -82,6 +82,18 @@ trained model (**.ckpt) and the data in the script.
 ### MARCO-Lite
 As for the MARCO-Lite dataset, please use the scripts under `scripts/Marco-Lite`.
 
+### T5-mini and T5-tiny
+
+To reproduce the results for T5-mini and T5-tiny, you need to download manually
+the two models from the Huggingface model hub. This can be done by running the
+following script:
+
+```bash
+$ huggingface-cli download --local-dir data/pretrained/t5-mini google/t5-efficient-mini
+$ huggingface-cli download --local-dir data/pretrained/t5-tiny google/t5-efficient-tiny
+```
+
+
 ## Acknowledgments
 A large part of the code is based on the implementation of
 [NCI](https://github.com/solidsea98/Neural-Corpus-Indexer-NCI?tab=readme-ov-file).

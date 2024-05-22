@@ -25,3 +25,4 @@ wandb
 sentencepiece
 tensorboardX
 datasets
+huggingface_hub[cli]
