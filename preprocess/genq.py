@@ -11,40 +11,6 @@ torch.backends.cuda.matmul.allow_tf32 = True
 
 cache = argparse.Namespace()
 
-def main(args):
-    docs = pd.read_csv(
-        args.docs_path,
-        sep="\t",
-        usecols=["docid", "doc"],
-        index_col="docid",
-    )["doc"]
-    docid2doc = dict(docs)
-    
-    ctx = multiprocessing.get_context("spawn")
-
-    device_que = ctx.Queue()
-    for i in range(args.n_gpus):
-        device_que.put(i)
-
-    os.makedirs(os.path.dirname(args.output_path), exist_ok=True)
-    f = open(args.output_path + '.tmp', "wt")
-    f.write("docid\tquery\n")
-
-    os.makedirs(os.path.dirname(args.output_path), exist_ok=True)
-    with ctx.Pool(args.n_gpus, initializer=init, initargs=(args, device_que)) as pool:
-        handles = []
-        for docid, doc in docid2doc.items():
-            handle = pool.apply_async(gen_query, args=(doc,))
-            handles.append((docid, handle))
-
-        for docid, handle in tqdm.tqdm(handles):
-            queries = handle.get()
-            for query in queries:
-                f.write(str(docid) + "\t" + query + "\n")
-
-    f.close()
-    shutil.move(args.output_path + '.tmp', args.output_path)
-
 
 def main(args):
     docs = pd.read_csv(
@@ -65,7 +31,6 @@ def main(args):
     f = open(args.output_path + '.tmp', "wt")
     f.write("docid\tquery\n")
 
-    os.makedirs(os.path.dirname(args.output_path), exist_ok=True)
     with ctx.Pool(args.n_gpus, initializer=init, initargs=(args, device_que)) as pool:
         handles = []
         
@@ -76,12 +41,12 @@ def main(args):
                 docid_batch, docs = zip(*samples)
                 handle = pool.apply_async(gen_query, args=(docs,))
                 handles.append((docid_batch, handle))
-                samples.clear()
+                samples = []
         if len(samples):
             docid_batch, docs = zip(*samples)
             handle = pool.apply_async(gen_query, args=(docs,))
             handles.append((docid_batch, handle))
-            samples.clear()
+            samples = []
 
         for docid_batch, handle in tqdm.tqdm(handles):
             queries = handle.get()
@@ -137,9 +102,7 @@ def gen_query(docs):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(
-        description="Options for Commonsense Knowledge Base Completion"
-    )
+    parser = argparse.ArgumentParser()
 
     parser.add_argument("--model_path", type=str)
     parser.add_argument("--docs_path", type=str)
