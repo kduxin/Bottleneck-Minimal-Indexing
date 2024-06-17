@@ -1,6 +1,6 @@
-# [ICML 2024] Bottleneck Minimal Indexing for Generative Document Retrieval
+# [ICML 2024 (Oral)] Bottleneck Minimal Indexing for Generative Document Retrieval
 Code for the following paper:
-- Xin Du, Lixin Xiu, and Kumiko Tanaka-Ishii. *Bottleneck Minimal Indexing for Generative Document Retrieval*. In ICML 2024.
+- Xin Du, Lixin Xiu, and Kumiko Tanaka-Ishii. *Bottleneck Minimal Indexing for Generative Document Retrieval*. ICML 2024. Paper available at https://arxiv.org/abs/2405.10974
 
 If you find the work useful, please cite the following paper:
 ```bibtex
