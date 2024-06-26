@@ -15,7 +15,7 @@ python -m BMI.main \
     --decode_embedding 2 \
     --query_type realq ta genq docseg \
     --num_train_epochs 40 \
-    --train_batch_size 128 --eval_batch_size 8 \
+    --train_batch_size 64 --eval_batch_size 2 \
     --dropout_rate 0.1 --Rdrop 0.15 \
     --adaptor_layer_num 4 --adaptor_decode 1 --adaptor_efficient 1 \
     --output_vocab_size 30 \
