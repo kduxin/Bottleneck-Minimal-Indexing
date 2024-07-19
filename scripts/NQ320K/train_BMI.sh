@@ -5,9 +5,8 @@ export WANDB_API_KEY="INSERT_YOUR_WANDB_API_KEY"
 ## Uncomment the following line if you encounter
 ## distributed training problems (e.g., when you are using RTX4090 GPUs)
 # export NCCL_P2P_DISABLE=1    
-# export NCCL_P2P_DISABLE=1 \
 
-python -m BMI.main \
+python -m NCIRetriever.main \
     --mode train \
     --model_info small \
     --data_root data/NQ320K/output \

@@ -6,9 +6,9 @@ export WANDB_API_KEY="4cd046a5edd8dd0a58a2060aa5177f4639871e60"
 ## distributed training problems (e.g., when you are using RTX4090 GPUs)
 # export NCCL_P2P_DISABLE=1    
 
-python -m BMI.main \
+python -m NCIRetriever.main \
     --mode train \
-    --model_info mini \
+    --model_info small \
     --data_root data/Marco-Lite/output \
     --data_subdir HKmI.bert-base-uncased.doc2query-t5-base-msmarco \
     --decode_embedding 2 \

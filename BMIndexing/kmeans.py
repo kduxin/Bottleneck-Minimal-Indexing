@@ -11,7 +11,7 @@ import h5py
 import cupy
 import cuml
 
-from BMI.io import IndexedEmbeddings, StringIndexing
+from NCIRetriever.io import IndexedEmbeddings, StringIndexing
 
 
 def main(args):
@@ -72,7 +72,7 @@ def main(args):
         end = index.index(-1)
         docid2index[ids[i]] = index[:end]
     indexing = StringIndexing(docid2index)
-    
+
     os.makedirs(os.path.dirname(args.output_path), exist_ok=True)
     indexing.to_tsv(args.output_path)
 

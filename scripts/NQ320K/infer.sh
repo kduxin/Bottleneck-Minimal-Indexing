@@ -11,7 +11,7 @@ DATA_SUBDIR="BMI.bert-base-uncased.doc2query-t5-base-msmarco-ft_NQ320K.realq_gen
 ## Model size information. Replace the following with your own model size information
 MODEL_INFO="small"
 
-python -m BMI.main --mode eval \
+python -m NCIRetriever.main --mode eval \
 --decode_embedding 2 \
 --tree 1 \
 --query_type \

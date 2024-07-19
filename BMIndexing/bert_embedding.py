@@ -7,7 +7,7 @@ import pandas as pd
 import numpy as np
 import torch
 import transformers
-from BMI.io import IndexedEmbeddings
+from NCIRetriever.io import IndexedEmbeddings
 
 torch.backends.cuda.matmul.allow_tf32 = True
 
@@ -69,9 +69,7 @@ def init(args, device_que):
     device = device_que.get()
     os.environ["CUDA_VISIBLE_DEVICES"] = str(device)
     cache.tokenizer = transformers.AutoTokenizer.from_pretrained(args.model_path)
-    cache.model = transformers.AutoModel.from_pretrained(args.model_path).to(
-        "cuda"
-    )
+    cache.model = transformers.AutoModel.from_pretrained(args.model_path).to("cuda")
     cache.model.eval()
 
     print("Initialization finished")

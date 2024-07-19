@@ -116,7 +116,7 @@ class Doc2QueryDataset(Dataset):
         def _load_samples():
             df = pd.read_csv(
                 tsv_file,
-                usecols=['doc', 'query'],
+                usecols=["doc", "query"],
                 sep="\t",
                 chunksize=1000 if test1000 else None,
             )
@@ -218,7 +218,7 @@ def train(args):
         print("Converting to huggingface Transformers format...")
         ckpt = torch.load(checkpoint_callback.best_model_path, map_location="cpu")
         finetuner.load_state_dict(ckpt["state_dict"])
-        save_path = checkpoint_callback.best_model_path.replace('.ckpt', '')
+        save_path = checkpoint_callback.best_model_path.replace(".ckpt", "")
         finetuner.model.save_pretrained(args.finetuned_ckpt)
         finetuner.tokenizer.save_pretrained(args.finetuned_ckpt)
         print(f"Model saved to {args.finetuned_ckpt}")
